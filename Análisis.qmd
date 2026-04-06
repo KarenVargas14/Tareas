@@ -1,0 +1,135 @@
+---
+title: "Análisis"
+author: "Karen Vargas"
+format: html
+editor: visual
+---
+
+# Datos
+
+```{r}
+mañana <- c(4.0, 3.5, 3.8, 3.6, 4.1)
+tarde  <- c(3.8, 3.5, 3.0, 2.9)
+noche  <- c(3.1, 2.5, 2.6)
+```
+
+Explicación: 
+Se definen tres vectores que representan los valores de cada turno.
+
+
+
+# Crear base de datos
+
+```{r}
+library(dplyr)
+
+datos <- data.frame(
+  valor = c(mañana, tarde, noche),
+  turno = c(rep("Mañana", length(mañana)),
+            rep("Tarde", length(tarde)),
+            rep("Noche", length(noche)))
+)
+```
+
+Explicación:
+Se unifican los datos en una sola tabla, agregando una variable que identifica el turno.
+
+
+
+# Tamaño de muestra
+
+```{r}
+datos %>%
+  group_by(turno) %>%
+  summarise(tamano = n())
+```
+
+Explicación: 
+Se obtiene la cantidad de datos en cada turno.
+
+
+
+# Media por turno
+
+```{r}
+datos %>%
+  group_by(turno) %>%
+  summarise(media = mean(valor))
+```
+
+Explicación:
+La media permite conocer el valor promedio en cada turno.
+
+
+
+# Varianza por turno
+
+```{r}
+datos %>%
+  group_by(turno) %>%
+  summarise(varianza = var(valor))
+```
+
+Explicación:  
+La varianza mide la dispersión de los datos respecto a la media.
+
+
+
+# Media general
+
+```{r}
+media_total <- mean(datos$valor)
+media_total
+```
+
+Explicación: 
+Representa el promedio global considerando todos los turnos.
+
+
+
+# Intervarianza (entre grupos)
+
+```{r}
+intervarianza <- datos %>%
+  group_by(turno) %>%
+  summarise(
+    n = n(),
+    media = mean(valor)
+  ) %>%
+  mutate((n * (media - media_total)^2)) %>%
+  summarise(intervar = sum(`(n * (media - media_total)^2)`)) %>%
+  pull(intervar)
+
+intervarianza
+```
+
+Explicación:
+Mide la variabilidad entre los promedios de cada turno.
+
+
+
+# Intravarianza (dentro de grupos)
+
+```{r}
+intravarianza <- datos %>%
+  group_by(turno) %>%
+  summarise(sumatoria = sum((valor - mean(valor))^2)) %>%
+  summarise(intra = sum(sumatoria)) %>%
+  pull(intra)
+
+intravarianza
+```
+
+Explicación:  
+Mide la variabilidad dentro de cada grupo.
+Indica qué tan dispersos están los datos dentro de cada turno.
+
+
+
+# Conclusión
+
+El análisis muestra diferencias entre los turnos en términos de promedio y variabilidad. 
+El turno de la mañana presenta valores más altos en promedio, mientras que el turno de la noche presenta valores más bajos. 
+
+La intervarianza indica que existen diferencias entre los grupos, mientras que la intravarianza muestra la dispersión interna de cada uno. 
+En conjunto, estos resultados permiten concluir que el turno influye en los valores observados.

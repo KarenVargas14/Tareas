@@ -1,0 +1,265 @@
+---
+title: "dplyr"
+author: "Karen Vargas"
+format: html
+---
+```{r}
+library(dplyr)
+library(gapminder)
+library(tidyr)
+```
+
+  
+  ## Ejercicio 1
+
+```{r}
+gapminder %>%
+  select(country, year, lifeExp)
+```
+
+Interpretación: Se seleccionan variables para analizar la evolución de la esperanza de vida.
+
+
+
+## Ejercicio 2
+
+```{r}
+gapminder %>%
+  filter(year == 2007)
+```
+
+Interpretación: Se filtran los datos del año más reciente.
+
+
+
+## Ejercicio 3
+
+```{r}
+gapminder %>%
+  filter(continent == "Asia")
+```
+
+Interpretación: Se analizan únicamente países asiáticos.
+
+
+
+## Ejercicio 4
+
+```{r}
+gapminder %>%
+  filter(lifeExp > 70)
+```
+
+Interpretación: Se identifican países con alta esperanza de vida.
+
+
+
+## Ejercicio 5
+
+```{r}
+gapminder %>%
+  arrange(lifeExp)
+```
+
+Interpretación: Se ordenan los países según su esperanza de vida.
+
+
+
+## Ejercicio 6
+
+```{r}
+gapminder %>%
+  arrange(desc(gdpPercap))
+```
+
+Interpretación: Se identifican economías más fuertes.
+
+
+
+## Ejercicio 7
+
+```{r}
+gapminder %>%
+  mutate(gdp_total = gdpPercap * pop)
+```
+
+Interpretación: Se calcula el PIB total.
+
+
+
+## Ejercicio 8
+
+```{r}
+gapminder %>%
+  filter(year == 2007, pop > 100000000)
+```
+
+Interpretación: Se analizan países con gran población.
+
+
+
+## Ejercicio 9
+
+```{r}
+gapminder %>%
+  filter(continent == "Europe") %>%
+  select(country, gdpPercap)
+```
+
+Interpretación: Comparación económica en Europa.
+
+
+
+## Ejercicio 10
+
+```{r}
+gapminder %>%
+  group_by(continent) %>%
+  summarise(avg_lifeExp = mean(lifeExp))
+```
+
+Interpretación: Comparación del bienestar entre continentes.
+
+
+
+## Ejercicio 11
+
+```{r}
+gapminder %>%
+  group_by(continent, year) %>%
+  summarise(avg_gdpPercap = mean(gdpPercap))
+```
+
+Interpretación: Evolución económica por continente.
+
+
+
+## Ejercicio 12
+
+```{r}
+gapminder %>%
+  group_by(continent) %>%
+  summarise(max_lifeExp = max(lifeExp))
+```
+
+Interpretación: Mejores niveles de salud por región.
+
+
+
+## Ejercicio 13
+
+```{r}
+gapminder %>%
+  group_by(continent) %>%
+  summarise(num_countries = n())
+```
+
+Interpretación: Cantidad de países por continente.
+
+
+
+## Ejercicio 14
+
+```{r}
+gapminder %>%
+  group_by(continent) %>%
+  summarise(total_population = sum(pop))
+```
+
+Interpretación: Tamaño poblacional por continente.
+
+
+
+## Ejercicio 15
+
+```{r}
+gapminder %>%
+  filter(continent == "Americas") %>%
+  group_by(year) %>%
+  summarise(avg_lifeExp = mean(lifeExp))
+```
+
+Interpretación: Evolución de la esperanza de vida en América.
+
+
+
+## Ejercicio 16
+
+```{r}
+gapminder %>%
+  filter(year == 2007) %>%
+  arrange(desc(gdpPercap)) %>%
+  slice_head(n = 10)
+```
+
+Interpretación: Países más ricos en 2007.
+
+
+
+## Ejercicio 17
+
+```{r}
+gapminder %>%
+  group_by(year) %>%
+  slice_max(lifeExp, n = 1)
+```
+
+Interpretación: País líder en esperanza de vida por año.
+
+
+
+## Ejercicio 18
+
+```{r}
+gapminder %>%
+  group_by(continent) %>%
+  summarise(median_gdpPercap = median(gdpPercap))
+```
+
+Interpretación: Nivel económico típico por continente.
+
+
+
+## Ejercicio 19
+
+```{r}
+gapminder %>%
+  filter(year %in% c(1952, 2007)) %>%
+  select(country, year, lifeExp) %>%
+  pivot_wider(names_from = year, values_from = lifeExp) %>%
+  mutate(change_lifeExp = `2007` - `1952`)
+```
+
+Interpretación: Cambio en la esperanza de vida entre 1952 y 2007.
+
+
+
+## Ejercicio 20
+
+```{r}
+gapminder %>%
+  filter(year %in% c(1952, 2007)) %>%
+  select(country, year, gdpPercap) %>%
+  pivot_wider(names_from = year, values_from = gdpPercap) %>%
+  mutate(change_gdp = `2007` - `1952`) %>%
+  arrange(desc(change_gdp)) %>%
+  slice_head(n = 5)
+```
+
+Interpretación: Países con mayor crecimiento económico.
+
+
+
+## Bonus
+
+```{r}
+gapminder %>%
+  filter(year == 2007) %>%
+  group_by(continent) %>%
+  summarise(avg_lifeExp = mean(lifeExp)) %>%
+  arrange(desc(avg_lifeExp))
+```
+
+Interpretación: Comparación de calidad de vida por continente.
+
+
